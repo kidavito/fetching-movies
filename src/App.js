@@ -21,31 +21,49 @@ function App() {
 
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // PROMISES (fetch + async + await):
   async function fetchMoviesHandler() {
     // Set initial fetching status:
     setIsLoading(true);
 
-    // Request API data (fetching):
-    // By default, fetch will use GET method (request).
-    const response = await fetch("https://swapi.dev/api/films/"); // API endpoint.
-    const data = await response.json();
+    // Set initial error to null:
+    // Make sure to clear any previous error.
+    setError(null);
 
-    // Mapping the API contents:
-    const transformMovies = data.results.map((movieData) => {
-      return {
-        // Based on the API object:
-        id: movieData.episode_id,
-        title: movieData.title,
-        openingText: movieData.opening_crawl,
-        releaseDate: movieData.release_date,
-      };
-    });
+    try {
+      // Request API data (fetching):
+      // By default, fetch will use GET method (request).
+      const response = await fetch("https://swapi.dev/api/films/"); // API endpoint.
 
-    // Set the state value with data from the API:
-    setMovies(transformMovies);
+      // If response not "ok", then:
+      // Server doesn't responding or not returning any object.
+      // This could be any kind of error (example: 404 error).
+      if (!response.ok) {
+        throw new Error("Something went wrong!");
+      }
 
+      // But if the server is responding, then:
+      const data = await response.json();
+
+      // Mapping the API contents:
+      const transformMovies = data.results.map((movieData) => {
+        return {
+          // Based on the API object:
+          id: movieData.episode_id,
+          title: movieData.title,
+          openingText: movieData.opening_crawl,
+          releaseDate: movieData.release_date,
+        };
+      });
+
+      // Set the state value with data from the API:
+      setMovies(transformMovies);
+    } catch (error) {
+      // If error, set error state with error message:
+      setError(error.message);
+    }
     // Set final fetching status:
     setIsLoading(false);
   }
@@ -81,7 +99,10 @@ function App() {
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        {!isLoading && movies.length === 0 && <p>No movie(s) fetched.</p>}
+        {!isLoading && error && <p>{error}</p>}
+        {!isLoading && movies.length === 0 && !error && (
+          <p>No movie(s) fetched.</p>
+        )}
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
         {isLoading && <p>Loading...</p>}
       </section>
