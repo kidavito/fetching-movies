@@ -68,6 +68,25 @@ function App() {
     setIsLoading(false);
   }
 
+  // Content(s) to be rendered
+  // Initial content (default):
+  let content = <p>No movie(s) fetched.</p>;
+
+  // If any movies loaded:
+  if (movies.length > 0) {
+    content = <MoviesList movies={movies} />;
+  }
+
+  // If server returning error (server not responding or not returning any object):
+  if (error) {
+    content = <p>{error}</p>;
+  }
+
+  // If loading (while try contacting the server):
+  if (isLoading) {
+    content = <p>Loading...</p>;
+  }
+
   // // PROMISES (fetch + then):
   // function fetchMoviesHandler() {
   //   // Request API data:
@@ -98,14 +117,7 @@ function App() {
       <section>
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
-      <section>
-        {!isLoading && error && <p>{error}</p>}
-        {!isLoading && movies.length === 0 && !error && (
-          <p>No movie(s) fetched.</p>
-        )}
-        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {isLoading && <p>Loading...</p>}
-      </section>
+      <section>{content}</section>
     </React.Fragment>
   );
 }
