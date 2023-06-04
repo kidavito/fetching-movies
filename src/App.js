@@ -21,30 +21,50 @@ function App() {
 
   const [movies, setMovies] = useState([]);
 
-  // PROMISES (fetch + then):
-  function fetchMoviesHandler() {
+  // PROMISES (fetch + async + await):
+  async function fetchMoviesHandler() {
     // Request API data:
     // By default, fetch will use GET method (request)
-    fetch("https://swapi.dev/api/films/") // API endpoint.
-      .then((response) => {
-        // Receive the JSON format from the API and translate it into JavaScript object:
-        return response.json();
-      })
-      .then((data) => {
-        // Mapping the API contents:
-        const transformMovies = data.results.map((movieData) => {
-          return {
-            // Based on the API object:
-            id: movieData.episode_id,
-            title: movieData.title,
-            openingText: movieData.opening_crawl,
-            releaseDate: movieData.release_date,
-          };
-        });
-        // Set the state value with data from the API:
-        setMovies(transformMovies);
-      });
+    const response = await fetch("https://swapi.dev/api/films/"); // API endpoint.
+    const data = await response.json();
+    // Mapping the API contents:
+    const transformMovies = data.results.map((movieData) => {
+      return {
+        // Based on the API object:
+        id: movieData.episode_id,
+        title: movieData.title,
+        openingText: movieData.opening_crawl,
+        releaseDate: movieData.release_date,
+      };
+    });
+    // Set the state value with data from the API:
+    setMovies(transformMovies);
   }
+
+  // // PROMISES (fetch + then):
+  // function fetchMoviesHandler() {
+  //   // Request API data:
+  //   // By default, fetch will use GET method (request)
+  //   fetch("https://swapi.dev/api/films/") // API endpoint.
+  //     .then((response) => {
+  //       // Receive the JSON format from the API and translate it into JavaScript object:
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       // Mapping the API contents:
+  //       const transformMovies = data.results.map((movieData) => {
+  //         return {
+  //           // Based on the API object:
+  //           id: movieData.episode_id,
+  //           title: movieData.title,
+  //           openingText: movieData.opening_crawl,
+  //           releaseDate: movieData.release_date,
+  //         };
+  //       });
+  //       // Set the state value with data from the API:
+  //       setMovies(transformMovies);
+  //     });
+  // }
 
   return (
     <React.Fragment>
