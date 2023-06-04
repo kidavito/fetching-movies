@@ -21,8 +21,8 @@ function App() {
 
   const [movies, setMovies] = useState([]);
 
+  // PROMISES (fetch + then):
   function fetchMoviesHandler() {
-    // PROMISES (fetch + then)
     // Request API data:
     // By default, fetch will use GET method (request)
     fetch("https://swapi.dev/api/films/") // API endpoint.
