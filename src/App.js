@@ -20,13 +20,18 @@ function App() {
   // ];
 
   const [movies, setMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // PROMISES (fetch + async + await):
   async function fetchMoviesHandler() {
-    // Request API data:
-    // By default, fetch will use GET method (request)
+    // Set initial fetching status:
+    setIsLoading(true);
+
+    // Request API data (fetching):
+    // By default, fetch will use GET method (request).
     const response = await fetch("https://swapi.dev/api/films/"); // API endpoint.
     const data = await response.json();
+
     // Mapping the API contents:
     const transformMovies = data.results.map((movieData) => {
       return {
@@ -37,8 +42,12 @@ function App() {
         releaseDate: movieData.release_date,
       };
     });
+
     // Set the state value with data from the API:
     setMovies(transformMovies);
+
+    // Set final fetching status:
+    setIsLoading(false);
   }
 
   // // PROMISES (fetch + then):
@@ -72,7 +81,9 @@ function App() {
         <button onClick={fetchMoviesHandler}>Fetch Movies</button>
       </section>
       <section>
-        <MoviesList movies={movies} />
+        {!isLoading && movies.length === 0 && <p>No movie(s) fetched.</p>}
+        {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {isLoading && <p>Loading...</p>}
       </section>
     </React.Fragment>
   );
