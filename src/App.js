@@ -69,7 +69,7 @@ function App() {
   }
 
   // Content(s) to be rendered
-  // Initial content (default):
+  // Initial content(s) (default):
   let content = <p>No movie(s) fetched.</p>;
 
   // If any movies loaded:
