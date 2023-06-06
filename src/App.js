@@ -27,11 +27,10 @@ function App() {
   // PROMISES (fetch + async + await):
   // Using "useCallback" to store and compare this function if any changes.
   const fetchMoviesHandler = useCallback(async () => {
-    // Set initial fetching status:
+    // Set initial fetching status.
+    // Set initial error to null.
+    // To make sure to clear any previous error.
     setIsLoading(true);
-
-    // Set initial error to null:
-    // Make sure to clear any previous error.
     setError(null);
 
     try {
@@ -50,9 +49,9 @@ function App() {
       const data = await response.json();
 
       // Mapping the API contents:
+      // Based on the API object.
       const transformMovies = data.results.map((movieData) => {
         return {
-          // Based on the API object:
           id: movieData.episode_id,
           title: movieData.title,
           openingText: movieData.opening_crawl,
@@ -63,20 +62,18 @@ function App() {
       // Set the state value with data from the API:
       setMovies(transformMovies);
     } catch (error) {
-      // If error, set error state with error message:
-      setError(error.message);
+      setError(error.message); // If error, set error state with error message.
     }
-    // Set final fetching status:
-    setIsLoading(false);
+    setIsLoading(false); // Set final fetching status.
   }, []);
 
   // Side Effects:
+  // Initial movie fetch (When page loaded).
+  // Dependency array will prevent infinite loop.
+  // With dependency array, the movie fetch will only run through useEffect only if the "fetchMoviesHandler" function changed.
+  // Check the useCallback.
   useEffect(() => {
-    // Initial movie fetch (When page loaded):
     fetchMoviesHandler();
-    // Dependency array will prevent infinite loop.
-    // With dependency array, the movie fetch will only run through useEffect only if the "fetchMoviesHandler" function changed.
-    // Check the useCallback.
   }, [fetchMoviesHandler]);
 
   // Add Movie:
