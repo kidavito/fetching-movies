@@ -36,7 +36,9 @@ function App() {
     try {
       // Request API data (fetching):
       // By default, fetch will use GET method (request).
-      const response = await fetch("https://swapi.dev/api/films/"); // API endpoint.
+      const response = await fetch(
+        "https://fetching-movies-6a2ea-default-rtdb.firebaseio.com/movies.json"
+      ); // API endpoint.
 
       // If response not "ok", then:
       // Server doesn't responding or not returning any object.
