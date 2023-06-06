@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 import MoviesList from "./components/MoviesList";
 import "./App.css";
@@ -24,7 +24,8 @@ function App() {
   const [error, setError] = useState(null);
 
   // PROMISES (fetch + async + await):
-  async function fetchMoviesHandler() {
+  // Using "useCallback" to store and compare this function if any changes.
+  const fetchMoviesHandler = useCallback(async () => {
     // Set initial fetching status:
     setIsLoading(true);
 
@@ -66,7 +67,16 @@ function App() {
     }
     // Set final fetching status:
     setIsLoading(false);
-  }
+  }, []);
+
+  // Side Effects:
+  useEffect(() => {
+    // Initial movie fetch (When page loaded):
+    fetchMoviesHandler();
+    // Dependency array will prevent infinite loop.
+    // With dependency array, the movie fetch will only run through useEffect only if the "fetchMoviesHandler" function changed.
+    // Check the useCallback.
+  }, [fetchMoviesHandler]);
 
   // Content(s) to be rendered
   // Initial content(s) (default):
