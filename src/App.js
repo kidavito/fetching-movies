@@ -50,7 +50,7 @@ function App() {
       // But if the server is responding, then:
       const data = await response.json();
 
-      // [ONLINE VERSION - FIREBASE]
+      // [FIREBASE API VERSION]
       // Mapping the API contents:
       // Based on the API object.
       const loadedMovies = []; // Initially empty.
@@ -66,7 +66,7 @@ function App() {
       // Set the state value with data from the API:
       setMovies(loadedMovies);
 
-      // [OFFLINE VERSION]
+      // [STARWARS API VERSION]
       // Mapping the API contents:
       // Based on the API object.
       // const transformMovies = data.map((movieData) => {
