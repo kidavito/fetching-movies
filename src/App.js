@@ -24,52 +24,68 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // PROMISES (fetch + async + await):
+  // [PROMISES (fetch + async + await) VERSION]:
   // Using "useCallback" to store and compare this function if any changes.
+  // Set initial fetching status.
+  // Set initial error to null.
+  // To make sure to clear any previous error.
   const fetchMoviesHandler = useCallback(async () => {
-    // Set initial fetching status.
-    // Set initial error to null.
-    // To make sure to clear any previous error.
     setIsLoading(true);
     setError(null);
 
+    // [RETRIVE MOVIE LIST FROM API [GET METHOD]]
+    // Try request API data (fetching)
+    // By default, fetch will use GET method.
+    // Check "addMovieHandler" to see how to use other method(s).
     try {
-      // Request API data (fetching):
-      // By default, fetch will use GET method (request).
       const response = await fetch(
         "https://fetching-movies-6a2ea-default-rtdb.firebaseio.com/movies.json"
-      ); // API endpoint.
-
+      );
       // If response not "ok", then:
       // Server doesn't responding or not returning any object.
       // This could be any kind of error (example: 404 error).
       if (!response.ok) {
         throw new Error("Something went wrong!");
       }
-
       // But if the server is responding, then:
       const data = await response.json();
 
+      // [ONLINE VERSION - FIREBASE]
       // Mapping the API contents:
       // Based on the API object.
-      const transformMovies = data.results.map((movieData) => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
-        };
-      });
-
+      const loadedMovies = []; // Initially empty.
+      // Push a new object for every key value pair in response data (FOR LOOP):
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
       // Set the state value with data from the API:
-      setMovies(transformMovies);
+      setMovies(loadedMovies);
+
+      // [OFFLINE VERSION]
+      // Mapping the API contents:
+      // Based on the API object.
+      // const transformMovies = data.map((movieData) => {
+      //   return {
+      //     id: movieData.episode_id,
+      //     title: movieData.title,
+      //     openingText: movieData.opening_crawl,
+      //     releaseDate: movieData.release_date,
+      //   };
+      // });
+      // Set the state value with data from the API:
+      // setMovies(transformMovies);
     } catch (error) {
       setError(error.message); // If error, set error state with error message.
     }
     setIsLoading(false); // Set final fetching status.
   }, []);
 
-  // Side Effects:
+  // [SIDE EFFECT (USEEFFECT)]:
   // Initial movie fetch (When page loaded).
   // Dependency array will prevent infinite loop.
   // With dependency array, the movie fetch will only run through useEffect only if the "fetchMoviesHandler" function changed.
@@ -78,13 +94,27 @@ function App() {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
 
-  // Add Movie:
-  function addMovieHandler(movie) {
-    console.log(movie);
+  // [ADD MOVIE (POST METHOD)]:
+  async function addMovieHandler(movie) {
+    const response = await fetch(
+      "https://fetching-movies-6a2ea-default-rtdb.firebaseio.com/movies.json",
+      {
+        method: "POST",
+        body: JSON.stringify(movie),
+        headers: {
+          "Content-Type": "application/json", // Not required, but better.
+        },
+      }
+    );
+    // [TESTING]:
+    // Retrieve data from server.
+    // This is for testing only, not mandatory.
+    const data = await response.json();
+    console.log(data);
   }
 
-  // Content(s) to be rendered
-  // Initial content(s) (default):
+  // Content(s) to be rendered:
+  // Initial content(s) (default).
   let content = <p>No movie(s) fetched.</p>;
 
   // If any movies loaded:
@@ -102,7 +132,7 @@ function App() {
     content = <p>Loading...</p>;
   }
 
-  // // PROMISES (fetch + then):
+  // [PROMISES (fetch + then) VERSION]:
   // function fetchMoviesHandler() {
   //   // Request API data:
   //   // By default, fetch will use GET method (request)
